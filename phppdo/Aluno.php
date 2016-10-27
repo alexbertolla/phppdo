@@ -13,24 +13,66 @@
  */
 class Aluno {
 
-    private static $conn;
+    private $id;
+    private $nome;
+    private $nota;
 
-    public function __construct(PDO $conn) {
-        self::$conn = $conn;
+    function inserir(Aluno $aluno, PDO $conn) {
+        $alunoBD = new AlunoBD($conn);
+        return $alunoBD->inserir($aluno->getNome(), $aluno->getNota());
     }
 
-    function listarAlunos() {
-        $query = 'SELECT * FROM phppdo.alunos ORDER BY nome ASC';
-        $stm = self::$conn->prepare($query);
-        $stm->execute();
-        return $stm->fetchAll(PDO::FETCH_OBJ);
+    function alterar(Aluno $aluno, PDO $conn) {
+        $alunoBD = new AlunoBD($conn);
+        return $alunoBD->alterar($aluno->getId(), $aluno->getNome(), $aluno->getNota());
     }
 
-    function listarTresMaioesNotas() {
-        $query = 'SELECT * FROM phppdo.alunos ORDER BY nota DESC LIMIT 3';
-        $stm = self::$conn->prepare($query);
-        $stm->execute();
-        return $stm->fetchAll(PDO::FETCH_OBJ);
+    function excluir(Aluno $aluno, PDO $conn) {
+        $alunoBD = new AlunoBD($conn);
+        return $alunoBD->excluir($aluno->getId());
+    }
+
+    function listarAlunos($conn) {
+        $alunoBD = new AlunoBD($conn);
+        return $alunoBD->listarAlunos();
+    }
+
+    function listarTresMaioesNotas($conn) {
+        $alunoBD = new AlunoBD($conn);
+        return $alunoBD->listarTresMaioesNotas();
+    }
+
+    function buscarPorId($id, $conn) {
+        $alunoBD = new AlunoBD($conn);
+        $aluno = $alunoBD->buscarPorId($id);
+        $this->setId($aluno->id);
+        $this->setNome($aluno->nome);
+        $this->setNota($aluno->nota);
+        return $this;
+    }
+
+    function getId() {
+        return $this->id;
+    }
+
+    function getNome() {
+        return $this->nome;
+    }
+
+    function getNota() {
+        return $this->nota;
+    }
+
+    function setId($id) {
+        $this->id = $id;
+    }
+
+    function setNome($nome) {
+        $this->nome = $nome;
+    }
+
+    function setNota($nota) {
+        $this->nota = $nota;
     }
 
 }
